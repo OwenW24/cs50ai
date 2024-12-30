@@ -89,6 +89,8 @@ class Maze():
                     print("B", end ="")
                 elif solution is not None and (i,j) in solution:
                     print("*", end="")
+                else:
+                    print(" ", end="")
             print()
         print()
     
@@ -120,7 +122,7 @@ class Maze():
         
         # initialize frontier to just the starting position
         start = Node(state=self.start, parent=None, action=None)
-        frontier = StackFrontier()
+        frontier = QueueFrontier()
         frontier.add(start)
         
         self.explored = set()
@@ -167,8 +169,8 @@ def main():
     maze.print()
 
     print(f"States Explored: {maze.num_explored}")
-    if maze.solution is not None:
-        print("Solution actions:", maze.solution[0])
+    # if maze.solution is not None:
+    #     print("Solution actions:", maze.solution[0])
 
 if __name__ == "__main__":
     main()
