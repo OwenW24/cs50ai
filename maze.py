@@ -62,10 +62,10 @@ class Maze():
             for j in range(self.width):
                 try:
                     if contents[i][j] == "A":
-                        self.start == (i,j)
+                        self.start = (i,j)
                         row.append(False)
                     elif contents[i][j] == "B":
-                        self.end == (i,j)
+                        self.goal = (i,j)
                         row.append(False)
                     elif contents[i][j] == " ":
                         row.append(False)
@@ -107,7 +107,7 @@ class Maze():
         for action, (r,c) in candidates:
             try:
                 if not self.walls[r][c]:
-                    result.append((action), (r,c))
+                    result.append((action, (r,c)))
             except IndexError:
                 continue
         return result
@@ -140,7 +140,7 @@ class Maze():
                 #follow parent nodes to find solution
                 while node.parent is not None:
                     actions.append(node.action)
-                    cells.apebd(node.state)
+                    cells.append(node.state)
                     node = node.parent
                 actions.reverse()
                 cells.reverse()
@@ -157,4 +157,18 @@ class Maze():
                     frontier.add(child)
                 
                         
-maze1 = Maze(maze1.txt)
+def main():
+    if len(sys.argv) != 2:
+        sys.exit("Usage: python maze.py maze1.txt")
+
+    filename = sys.argv[1]
+    maze = Maze(filename)
+    maze.solve()
+    maze.print()
+
+    print(f"States Explored: {maze.num_explored}")
+    if maze.solution is not None:
+        print("Solution actions:", maze.solution[0])
+
+if __name__ == "__main__":
+    main()
