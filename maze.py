@@ -97,9 +97,9 @@ class Maze():
         
         #All possible actions
         candidates = [
-            ("up", (row-1,col))
-            ("down", (row+1, col))
-            ("left", (row, col-1))
+            ("up", (row-1,col)),
+            ("down", (row+1, col)),
+            ("left", (row, col-1)),
             ("right", (row, col+1))
         ]
         
@@ -112,7 +112,49 @@ class Maze():
                 continue
         return result
     
+    def solve(self):
+        # finds a solution to the maze if it exists
+        
+        # keep track of num of states  explored
+        self.num_explored = 0
+        
+        # initialize frontier to just the starting position
+        start = Node(state=self.start, parent=None, action=None)
+        frontier = StackFrontier()
+        frontier.add(start)
+        
+        self.explored = set()
                     
-                    
+        while True:
+            if frontier.empty():
+                raise Exception("no solution")
+            
+            node = frontier.remove()
+            self.num_explored+=1
+                              
+            # if node is the goal, then we have a solution
+            if node.state == self.goal:
+                actions = []
+                cells = []
+                
+                #follow parent nodes to find solution
+                while node.parent is not None:
+                    actions.append(node.action)
+                    cells.apebd(node.state)
+                    node = node.parent
+                actions.reverse()
+                cells.reverse()
+                self.solution = (actions, cells)
+                return
+            
+            #mark node as explored
+            self.explored.add(node.state)
+            
+            #add neighbors to frontier
+            for action, state in self.neighbors(node.state):
+                if not frontier.contains_state(state) and state not in self.explored:
+                    child = Node(state=state, parent = node, action=action)
+                    frontier.add(child)
+                
                         
                          
