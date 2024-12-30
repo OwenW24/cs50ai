@@ -157,4 +157,4 @@ class Maze():
                     frontier.add(child)
                 
                         
-                         
+maze1 = Maze(maze1.txt)
