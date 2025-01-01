@@ -1,10 +1,12 @@
 import sys
 
 class Node():
-    def __init__(self, state, parent, action):
+    def __init__(self, state, parent, action, goal):
         self.state = state
         self.parent = parent
         self.action = action
+        self.goal = goal
+        self.score = sum((abs(self.state[0] - self.goal[0]), abs(self.state[1] - self.goal[1])))
         
         
 class StackFrontier():
@@ -37,6 +39,19 @@ class QueueFrontier(StackFrontier):
             self.frontier = self.frontier[1:]
             return node
         
+class GreedyFrontier(StackFrontier):
+    
+    
+    def remove(self):
+        if self.empty():
+            raise Exception("empty frontier")
+        else:
+            min_node = self.frontier[0] 
+            for node in self.frontier:
+                if node.score < min_node.score: 
+                    min_node = node  
+            self.frontier.remove(min_node)
+            return min_node 
         
 class Maze():
     
@@ -114,19 +129,25 @@ class Maze():
                 continue
         return result
     
+    
+    
     def solve(self):
         # finds a solution to the maze if it exists
         
         # keep track of num of states  explored
         self.num_explored = 0
         
+        #need to calculate the scrore for each node
+        
         # initialize frontier to just the starting position
-        start = Node(state=self.start, parent=None, action=None)
-        frontier = QueueFrontier()
+        start = Node(state=self.start, parent=None, action=None, goal=self.goal)
+      
+        frontier = GreedyFrontier()
         frontier.add(start)
         
         self.explored = set()
-                    
+        
+
         while True:
             if frontier.empty():
                 raise Exception("no solution")
@@ -155,8 +176,19 @@ class Maze():
             #add neighbors to frontier
             for action, state in self.neighbors(node.state):
                 if not frontier.contains_state(state) and state not in self.explored:
-                    child = Node(state=state, parent = node, action=action)
+                    child = Node(state=state, parent = node, action=action, goal=self.goal)
                     frontier.add(child)
+                    
+    ## now ill try to create a greedy best first search solve function
+    # def greedySolve(self):
+    #     self.num_explored = 0
+    
+    #     start = Node(state=self.start, parent=None, action=None)
+        
+    #     frontier = QueueFrontier()
+        
+    #     frontier.add(start)
+        
                 
                         
 def main():
