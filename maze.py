@@ -6,6 +6,11 @@ class Node():
         self.parent = parent
         self.action = action
         self.goal = goal
+        if parent == None:
+            self.steps = 0
+        else:
+            self.steps = parent.steps + 1
+            
         self.score = sum((abs(self.state[0] - self.goal[0]), abs(self.state[1] - self.goal[1])))
         
         
@@ -40,8 +45,6 @@ class QueueFrontier(StackFrontier):
             return node
         
 class GreedyFrontier(StackFrontier):
-    
-    
     def remove(self):
         if self.empty():
             raise Exception("empty frontier")
@@ -49,6 +52,18 @@ class GreedyFrontier(StackFrontier):
             min_node = self.frontier[0] 
             for node in self.frontier:
                 if node.score < min_node.score: 
+                    min_node = node  
+            self.frontier.remove(min_node)
+            return min_node 
+        
+class A_StarFrontier(StackFrontier):    
+    def remove(self):
+        if self.empty():
+            raise Exception("empty frontier")
+        else:
+            min_node = self.frontier[0] 
+            for node in self.frontier:
+                if (node.score + node.steps) < (min_node.score + min_node.steps): 
                     min_node = node  
             self.frontier.remove(min_node)
             return min_node 
@@ -142,7 +157,8 @@ class Maze():
         # initialize frontier to just the starting position
         start = Node(state=self.start, parent=None, action=None, goal=self.goal)
       
-        frontier = GreedyFrontier()
+        frontier = A_StarFrontier()
+        
         frontier.add(start)
         
         self.explored = set()
@@ -153,6 +169,7 @@ class Maze():
                 raise Exception("no solution")
             
             node = frontier.remove()
+            # node.steps += 1
             self.num_explored+=1
                               
             # if node is the goal, then we have a solution
