@@ -58,6 +58,7 @@ class GreedyFrontier(StackFrontier):
         
 class A_StarFrontier(StackFrontier):    
     def remove(self):
+        
         if self.empty():
             raise Exception("empty frontier")
         else:
@@ -138,7 +139,7 @@ class Maze():
         result = []
         for action, (r,c) in candidates:
             try:
-                if not self.walls[r][c]:
+                if not (self.walls[r][c]) and not(r<0 or c<0):
                     result.append((action, (r,c)))
             except IndexError:
                 continue
@@ -157,7 +158,7 @@ class Maze():
         # initialize frontier to just the starting position
         start = Node(state=self.start, parent=None, action=None, goal=self.goal)
       
-        frontier = A_StarFrontier()
+        frontier = A_StarFrontier()  #change this guy
         
         frontier.add(start)
         
