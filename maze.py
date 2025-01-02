@@ -147,7 +147,7 @@ class Maze():
     
     
     
-    def solve(self):
+    def solve(self, agent):
         # finds a solution to the maze if it exists
         
         # keep track of num of states  explored
@@ -159,6 +159,19 @@ class Maze():
         start = Node(state=self.start, parent=None, action=None, goal=self.goal)
       
         frontier = A_StarFrontier()  #change this guy
+        
+        if agent == 0:
+            frontier = StackFrontier()
+            print("depth search")
+        elif agent == 1:
+            frontier = QueueFrontier()
+            print("quese (theres another term for this) search")
+        elif agent == 2:
+            frontier = GreedyFrontier()
+            print("greedy search")
+        elif agent == 3: 
+            frontier = A_StarFrontier()
+            print("A star search")
         
         frontier.add(start)
         
@@ -215,10 +228,15 @@ def main():
 
     filename = sys.argv[1]
     maze = Maze(filename)
-    maze.solve()
-    maze.print()
-
-    print(f"States Explored: {maze.num_explored}")
+    
+    
+    # maze.solve(0)
+    # maze.print()
+    
+    for i in range(4):
+        maze.solve(i)
+        maze.print()
+        print(f"States Explored: {maze.num_explored}")
     # if maze.solution is not None:
     #     print("Solution actions:", maze.solution[0])
 
