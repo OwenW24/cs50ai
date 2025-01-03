@@ -1,6 +1,7 @@
 import sys
 import pygame
 import numpy as np
+from button import Button
 
 pygame.init()
 
@@ -12,8 +13,8 @@ GREEN = (0, 255, 0)
 BLACK = (0,0,0)
 
 #proportions and sizes
-WIDTH = 300
-HEIGHT = 300
+WIDTH = 500 
+HEIGHT = 500
 LINE_WIDTH = 5
 BOARD_ROWS = 3
 BOARD_COLS = 3
@@ -22,15 +23,25 @@ CIRCLE_RADIUS = SQUARE_SIZE // 3
 CIRCLE_WIDTH = 15
 CROSS_WIDTH = 25
 
-screen = pygame.display.set_mode((WIDTH,HEIGHT))
-pygame.display.set_caption('Tic Tac Toe Minimax AI')
 
+
+#Font
+font = pygame.font.SysFont( "minecraftregular", 55)
+screen = pygame.display.set_mode((WIDTH,HEIGHT))
+pygame.display.set_caption('game base')
 board = np.zeros((BOARD_ROWS, BOARD_COLS))
 
 def draw_lines(color=WHITE):
     for i in range(1,BOARD_ROWS):
         pygame.draw.line(screen, color, (0, SQUARE_SIZE * i), (WIDTH, SQUARE_SIZE * i))
         pygame.draw.line(screen, color, (SQUARE_SIZE * i, 0), (SQUARE_SIZE * i, HEIGHT))
+
+def draw_text(text, font, color, surface, x, y):
+    textobj = font.render(text, 1, color)
+    textrect = textobj.get_rect()
+    textrect.topleft = (x,y)
+    surface.blit(textobj,textrect)
+    
         
 def draw_figures(color=WHITE):
     for row in range(BOARD_ROWS):
@@ -132,21 +143,67 @@ def restart_game():
         for col in range(BOARD_COLS):
             board[row][col] = 0
             
-            
-            
-             
-            
 
-def main():
+def main_menu():
+    
+    pygame.display.set_caption('main menu')
+
+    while True:
+        screen.fill(WHITE)
+        MENU_MOUSE_POS = pygame.mouse.get_pos()
+        
+        # draw_text("Main Menu", font, (BLACK), screen, WIDTH//2, HEIGHT * (1/5))
+        PLAY_BUTTON = Button(None, (WIDTH//2, HEIGHT* (3 / 8)), "play", font, RED, GREEN)  # button object test
+        OPTIONS_BUTTON = Button(None, (WIDTH//2, HEIGHT* (4 / 8)), "options", font, RED, GREEN)  # button object test
+        QUIT_BUTTON = Button(None, (WIDTH//2, HEIGHT* (5 /  8)), "quit", font, RED, GREEN)  # button object test
+
+        for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
+            button.changeColor(MENU_MOUSE_POS)
+            button.update(screen)
+            
+            
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:    
+                if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    play()
+                if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    options()
+                if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):   
+                    pygame.quit()
+                    sys.exit()
+                
+                
+                
+                
+                
+                
+        pygame.display.update()  
+    
+    
+    
+
+
+def options():
+    sys.exit()
+    return 0
+
+
+
+
+def play():
+    
+    pygame.display.set_caption('TicTacToe')
+    screen.fill(BLACK)
     draw_lines()
-    
     player = 1
-    
     game_over = False
-    
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                pygame.quit()
                 sys.exit()
             
             if event.type == pygame.MOUSEBUTTONDOWN and not game_over:
@@ -194,6 +251,14 @@ def main():
                 draw_lines(GREY)
         
         pygame.display.update()
+    
+            
+             
+            
+
+def main():
+    main_menu()
+    
             
                 
 if __name__ == "__main__":
