@@ -8,8 +8,9 @@ pygame.init()
 #colors
 WHITE =  (255, 255, 255)
 GREY = (180,180,180)
-RED = (255,0,0,)
+RED = (255,0,0)
 GREEN = (0, 255, 0)
+BLUE = (0,0,255)
 BLACK = (0,0,0)
 
 #proportions and sizes
@@ -23,7 +24,10 @@ CIRCLE_RADIUS = SQUARE_SIZE // 3
 CIRCLE_WIDTH = 15
 CROSS_WIDTH = 25
 
+MAX_DEPTH = float('inf')
 
+
+CURR_DIFFICULTY = 0  #0 is hard 1 is easy
 
 #Font
 font = pygame.font.SysFont( "minecraftregular", 55)
@@ -93,7 +97,7 @@ def minimax(minimax_board, depth, is_maximizing):
         return float('-inf')
     elif is_board_full(minimax_board):
         return 0
-    
+
     if is_maximizing:
         best_score = float('-inf')
         for row in range(BOARD_ROWS):
@@ -183,13 +187,50 @@ def main_menu():
         pygame.display.update()  
     
     
-    
+def change_difficulty():
+    if CURR_DIFFICULTY == 0:
+        CURR_DIFFICULTY = 1
+    else:
+        CURR_DIFFICULTY = 0
+    return 0
 
 
 def options():
-    sys.exit()
-    return 0
+    
+    pygame.display.set_caption('options')
+    
+    
+    
+    while True:
+        screen.fill(GREY)
+        
+        MENU_MOUSE_POS = pygame.mouse.get_pos()
+        
+        if CURR_DIFFICULTY == 0: #currentl y hard
+            EASY = Button(None, (WIDTH/4, HEIGHT* (3 / 8)), "easy", font, RED, GREEN)
+            HARD = Button(None, (WIDTH/2 + WIDTH/4, HEIGHT* (3 / 8)), "hard", font, RED, GREEN) 
+            pygame.draw.rect(screen, BLACK, ((WIDTH/2  + 3*WIDTH/32 , HEIGHT* 5/16), (150, 75)))
+        else:
+            EASY = Button(None, (WIDTH//4, HEIGHT* (3 / 8)), "easy", font, RED, GREEN)
+            HARD = Button(None, (WIDTH//2 + WIDTH//4, HEIGHT* (3 / 8)), "hard", font, RED, GREEN)
+            pygame.draw.rect(screen, BLACK, ((3*WIDTH/32 , HEIGHT* 5/16), (150, 75)))
+            
 
+        for button in [EASY, HARD]:
+            button.changeColor(MENU_MOUSE_POS)
+            button.update(screen)
+    
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:    
+                if EASY.checkForInput(MENU_MOUSE_POS):
+                    change_difficulty()
+                if HARD.checkForInput(MENU_MOUSE_POS):
+                    change_difficulty()
+
+        pygame.display.update()  
 
 
 
@@ -219,6 +260,10 @@ def play():
                     player = player % 2 + 1 # 1 to 2 and 2 to 1
                     
                     # minimax move
+                    
+                    
+                    
+                    
                     if not game_over:
                         if best_move():
                             if check_win(2):
