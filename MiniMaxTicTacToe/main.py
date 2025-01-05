@@ -264,6 +264,10 @@ def options():
                     change_difficulty()
                 if RETURN_HOME.checkForInput(MENU_MOUSE_POS):
                     return 0
+                
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_m:
+                    return 0
 
         pygame.display.update()
             
