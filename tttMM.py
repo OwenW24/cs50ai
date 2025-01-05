@@ -9,6 +9,7 @@ pygame.init()
 #colors
 WHITE =  (255, 255, 255)
 GREY = (180,180,180)
+DGREY = (140,140,140)
 RED = (255,0,0)
 GREEN = (0, 255, 0)
 BLUE = (0,0,255)
@@ -224,6 +225,17 @@ def options():
     while True:
         screen.fill(GREY)
         
+        pygame.draw.rect(screen, DGREY, ((0, 240), (500, 250)))
+        
+        pygame.draw.rect(screen, (90,90,90), ((0, 425), (500, 250)))
+        
+        draw_text("Controls: ", font, BLACK, screen, 5, HEIGHT/2)
+        draw_text("r = restart", font, BLUE, screen, 5, HEIGHT/2 + 55)
+        draw_text("m = main menu", font, BLUE, screen, 5, HEIGHT/2 + 110)
+        
+        draw_text("made by obi", font, GREY, screen, 5, 445)
+
+        
         MENU_MOUSE_POS = pygame.mouse.get_pos()
         
         if CURR_DIFFICULTY == 0: #currentl y hard
@@ -313,6 +325,8 @@ def play():
                     restart_game()
                     game_over = False
                     player = 1
+                if event.key == pygame.K_m:
+                    return 0
                     
         if not game_over:
             draw_figures()
